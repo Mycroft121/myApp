@@ -31,6 +31,18 @@ public class CounterController {
     this.logger = LoggerFactory.getLogger(CounterController.class);
   }
 
+  /**
+   * 获取当前计数
+   * @return API response json
+   */
+  @GetMapping(value = "/api/index")
+  ApiResponse index() {
+    logger.info("/api/index get request");
+    Optional<Counter> counter = counterService.getCounter(1);
+    return ApiResponse.ok("hello world");
+  }
+
+
 
   /**
    * 获取当前计数
