@@ -30,7 +30,7 @@ import java.util.Optional;
 
 public class CounterController {
 
-    String token = "56_gsO46P3FhiWvuOsItvPFdRpw5AUgSxNM_Denpb0fxc6Jbf8z9z-ddAbpYRPTdDJVbIjUNZ3XDuTqqlB8lfYuxx6Qy9k1UYD0JiXHC5vubN4Tn8MKlUFjfSlXuAzyOPCUNLgYN4UGFiZvgDzZIGNdAEAVTA";
+    String token = "56_z29Ut4WhqXxQtdFV8NXQOxT3Iz85v-WshPuuT3fixpXYhbm9Z73LL0nre0MtRGvwfiHFKl1InhvHQ3aQJQnXR8tsiOB6NeKquPZz2lxjZXBwZQd7ltv4DXo9qe19n55D6Ks3vlwdqIUPX2o5ISKaAGAEOG";
 
     final CounterService counterService;
     final Logger logger;
@@ -81,6 +81,7 @@ public class CounterController {
             System.out.println(headerName + " : " + request.getHeader(headerName) + "<br/>");
         }
         String openId = request.getHeader("x-wx-openid");
+//        String openId = "ociwi0ZL_j3_z8CxvrElJkicoeGg";
         List<WxMaSubscribeMessage.MsgData> msgDataList = new ArrayList<>();
         msgDataList.add(new WxMaSubscribeMessage.MsgData("phrase1", "value1"));
         msgDataList.add(new WxMaSubscribeMessage.MsgData("thing2", "value1"));
@@ -89,8 +90,8 @@ public class CounterController {
                 .templateId("vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0")
                 .data(msgDataList)
                 .build();
-//        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send";
-        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=56_gsO46P3FhiWvuOsItvPFdRpw5AUgSxNM_Denpb0fxc6Jbf8z9z-ddAbpYRPTdDJVbIjUNZ3XDuTqqlB8lfYuxx6Qy9k1UYD0JiXHC5vubN4Tn8MKlUFjfSlXuAzyOPCUNLgYN4UGFiZvgDzZIGNdAEAVTA";
+        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send";
+//        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="+token;
         String res = HttpRequest.post(url)
                 .header(Header.USER_AGENT, "Hutool http")//头信息，多个头信息多次调用此方法即可
                 .body(JSONUtil.toJsonStr(build))//表单内容
