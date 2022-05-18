@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
-import java.net.http.HttpRequest;
 import java.util.Optional;
 
 /**
