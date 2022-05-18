@@ -82,14 +82,12 @@ public class CounterController {
         }
         String openId = request.getHeader("x-wx-openid");
 //        String openId = "ociwi0ZL_j3_z8CxvrElJkicoeGg";
-        List<WxMaSubscribeMessage.MsgData> msgDataList = new ArrayList<>();
-        msgDataList.add(new WxMaSubscribeMessage.MsgData("phrase1", "value1"));
-        msgDataList.add(new WxMaSubscribeMessage.MsgData("thing2", "value1"));
         WxMaSubscribeMessage build = WxMaSubscribeMessage.builder()
                 .toUser(openId)
                 .templateId("vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0")
-                .data(msgDataList)
-                .build();
+                .build()
+                .addData("phrase1",new WxMaSubscribeMessage.MsgData("value1"))
+                .addData("thing2",new WxMaSubscribeMessage.MsgData("value1"));
         String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send";
         logger.info("/getOpenId request: {}", JSONUtil.toJsonStr(build));
 

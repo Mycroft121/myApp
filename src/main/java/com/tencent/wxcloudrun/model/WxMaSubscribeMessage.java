@@ -4,7 +4,9 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -52,7 +54,7 @@ public class WxMaSubscribeMessage implements Serializable {
      * 描述： 模板内容，不填则下发空模板
      * </pre>
      */
-    private List<MsgData> data;
+    private Map<String,MsgData> data;
 
     /**
      * 跳转小程序类型：developer为开发版；trial为体验版；formal为正式版；默认为正式版
@@ -64,12 +66,12 @@ public class WxMaSubscribeMessage implements Serializable {
      */
     private String lang = "zh_CN";
 
-    public WxMaSubscribeMessage addData(MsgData datum) {
+    public WxMaSubscribeMessage addData(String key,MsgData datum) {
         if (this.data == null) {
-            this.data = new ArrayList<>();
+            this.data = new HashMap<>();
         }
 
-        this.data.add(datum);
+        this.data.put(key,datum);
 
         return this;
     }
@@ -81,7 +83,6 @@ public class WxMaSubscribeMessage implements Serializable {
     public static class MsgData implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        private String name;
         private String value;
     }
 
