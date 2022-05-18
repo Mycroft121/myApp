@@ -91,6 +91,8 @@ public class CounterController {
                 .data(msgDataList)
                 .build();
         String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send";
+        logger.info("/getOpenId request: {}", JSONUtil.toJsonStr(build));
+
 //        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="+token;
         String res = HttpRequest.post(url)
                 .header(Header.USER_AGENT, "Hutool http")//头信息，多个头信息多次调用此方法即可
