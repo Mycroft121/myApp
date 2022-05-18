@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,6 +73,13 @@ public class CounterController {
      */
     @GetMapping(value = "/send")
     ApiResponse getOpenId(HttpServletRequest request) {
+        //获取请求头信息
+        Enumeration headerNames = request.getHeaderNames();
+        //使用循环遍历请求头，并通过getHeader()方法获取一个指定名称的头字段
+        while (headerNames.hasMoreElements()) {
+            String headerName = (String) headerNames.nextElement();
+            System.out.println(headerName + " : " + request.getHeader(headerName) + "<br/>");
+        }
         String openId = request.getHeader("x-wx-openid");
         List<WxMaSubscribeMessage.MsgData> msgDataList = new ArrayList<>();
         msgDataList.add(new WxMaSubscribeMessage.MsgData("phrase1", "value1"));
