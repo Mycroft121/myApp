@@ -1,5 +1,10 @@
 package com.tencent.wxcloudrun.controller;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
+import com.google.gson.JsonObject;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.common.service.WxService;
+import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.tencent.wxcloudrun.config.ApiResponse;
@@ -7,10 +12,16 @@ import com.tencent.wxcloudrun.dto.CounterRequest;
 import com.tencent.wxcloudrun.model.Counter;
 import com.tencent.wxcloudrun.service.CounterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -30,6 +41,24 @@ public class CounterController {
     this.counterService = counterService;
     this.logger = LoggerFactory.getLogger(CounterController.class);
   }
+
+  /**
+   * 获取当前计数
+   * @return API response json
+   */
+  @GetMapping(value = "/getOpenId")
+  ApiResponse getOpenId(String code) {
+    MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();      //只能是MultiValueMap，不能是Map
+    params.add("code", code);
+    HttpHeaders headers = new HttpHeaders();
+    HttpEntity httpEntity = new HttpEntity(params, headers);
+    RestTemplate restTemplate = new RestTemplate();
+    ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity("https://api.weixin.qq.com/wxa/getpluginopenpid", httpEntity, String.class);
+    String res = stringResponseEntity.toString();
+    logger.info("/getOpenId response: {}", res);
+    return ApiResponse.ok(res);
+  }
+
 
   /**
    * 获取当前计数
