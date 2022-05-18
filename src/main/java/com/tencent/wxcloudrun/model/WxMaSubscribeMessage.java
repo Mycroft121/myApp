@@ -24,7 +24,7 @@ public class WxMaSubscribeMessage implements Serializable {
      * 描述： 接收者（用户）的 openid
      * </pre>
      */
-    private String toUser;
+    private String touser;
 
     /**
      * 所需下发的模板消息的id.
@@ -34,7 +34,7 @@ public class WxMaSubscribeMessage implements Serializable {
      * 描述： 所需下发的模板消息的id
      * </pre>
      */
-    private String templateId;
+    private String template_id;
 
     /**
      * 点击模板卡片后的跳转页面，仅限本小程序内的页面.

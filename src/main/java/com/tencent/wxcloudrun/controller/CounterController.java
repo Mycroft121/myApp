@@ -30,7 +30,7 @@ import java.util.Optional;
 
 public class CounterController {
 
-    String token = "56_z29Ut4WhqXxQtdFV8NXQOxT3Iz85v-WshPuuT3fixpXYhbm9Z73LL0nre0MtRGvwfiHFKl1InhvHQ3aQJQnXR8tsiOB6NeKquPZz2lxjZXBwZQd7ltv4DXo9qe19n55D6Ks3vlwdqIUPX2o5ISKaAGAEOG";
+    String token = "57_ht1RVQjywzTrJp85DNKUk5ei-ZtFeFgQz0MlhYvtbanTCOZ8ee74xeOvbDcXh2DuDndZZ5alD2IB9SFwE41jtkCTYijvUJH_lEBOkmA0sWHV3lQDdOnBJHdjRZfSeEItlARBxfBr8P2hPvYTJUAdAEAYJP";
 
     final CounterService counterService;
     final Logger logger;
@@ -80,21 +80,23 @@ public class CounterController {
             String headerName = (String) headerNames.nextElement();
             System.out.println(headerName + " : " + request.getHeader(headerName) + "<br/>");
         }
-        String openId = request.getHeader("x-wx-openid");
-//        String openId = "ociwi0ZL_j3_z8CxvrElJkicoeGg";
+//        String openId = request.getHeader("x-wx-openid");
+        String openId = "ociwi0ZL_j3_z8CxvrElJkicoeGg";
         WxMaSubscribeMessage build = WxMaSubscribeMessage.builder()
-                .toUser(openId)
-                .templateId("vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0")
+                .touser(openId)
+                .template_id("vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0")
                 .build()
-                .addData("phrase1",new WxMaSubscribeMessage.MsgData("value1"))
-                .addData("thing2",new WxMaSubscribeMessage.MsgData("value1"));
-        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send";
+                .addData("phrase1",new WxMaSubscribeMessage.MsgData("测试数据"))
+                .addData("thing2",new WxMaSubscribeMessage.MsgData("测试数据"));
+//        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send";
+        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="+token;
+
         logger.info("/getOpenId request: {}", JSONUtil.toJsonStr(build));
 
-//        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="+token;
         String res = HttpRequest.post(url)
                 .header(Header.USER_AGENT, "Hutool http")//头信息，多个头信息多次调用此方法即可
                 .body(JSONUtil.toJsonStr(build))//表单内容
+//                .body("{\"touser\":\"ociwi0ZL_j3_z8CxvrElJkicoeGg\",\"template_id\":\"vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0\",\"data\":\"phrase1\":{\"value\":\"value1\"},{\"thing2\":{\"value\":\"value1\"},}}")
                 .execute().body();
         logger.info("/getOpenId response: {}", res);
         return ApiResponse.ok(res);
