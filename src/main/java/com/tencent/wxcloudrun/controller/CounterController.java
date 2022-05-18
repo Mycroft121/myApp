@@ -1,24 +1,25 @@
 package com.tencent.wxcloudrun.controller;
 
+import cn.hutool.http.Header;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONUtil;
 import com.tencent.wxcloudrun.config.ApiResponse;
 import com.tencent.wxcloudrun.dto.CounterRequest;
 import com.tencent.wxcloudrun.model.Counter;
+import com.tencent.wxcloudrun.model.OpenId;
+import com.tencent.wxcloudrun.model.WxMaSubscribeMessage;
 import com.tencent.wxcloudrun.service.CounterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -27,6 +28,8 @@ import java.util.Optional;
 @RestController
 
 public class CounterController {
+
+    String token = "56_gsO46P3FhiWvuOsItvPFdRpw5AUgSxNM_Denpb0fxc6Jbf8z9z-ddAbpYRPTdDJVbIjUNZ3XDuTqqlB8lfYuxx6Qy9k1UYD0JiXHC5vubN4Tn8MKlUFjfSlXuAzyOPCUNLgYN4UGFiZvgDzZIGNdAEAVTA";
 
     final CounterService counterService;
     final Logger logger;
@@ -41,23 +44,52 @@ public class CounterController {
      *
      * @return API response json
      */
-    @GetMapping(value = "/send")
-    ApiResponse getOpenId(HttpServletRequest request) {
-        String openId = request.getHeader("x-wx-openid");
-        MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();      //只能是MultiValueMap，不能是Map
-        params.add("touser", openId);
-        params.add("template_id","vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0");
-        params.add("data", "{ \"phrase1\": { \"value\": \"phrase1\" }, \"thing2\": { \"value\": \"thing2\" } }");
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity httpEntity = new HttpEntity(params, headers);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity("https://api.weixin.qq.com/cgi-bin/message/subscribe/send", httpEntity, String.class);
-        String res = stringResponseEntity.toString();
-        logger.info("/getOpenId response: {}", res);
+    @GetMapping(value = "/getAccessToken")
+    ApiResponse getAccessToken() {
+        String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx9d7ec299fee2d23b&secret=1eee794a8910f5d263b24647fb78c1b9";
+
+        String res = HttpRequest.get(url)
+                .execute().body();
+        logger.info("/getAccessToken response: {}", res);
         return ApiResponse.ok(res);
     }
 
+    @GetMapping(value = "/getPluginOpenPId")
+    ApiResponse getPluginOpenPId(String code) {
+        String url = "https://api.weixin.qq.com/wxa/getpluginopenpid?access_token=" + token;
+        OpenId openId = OpenId.builder().code(code).build();
+        String res = HttpRequest.post(url)
+                .body(JSONUtil.toJsonStr(openId))
+                .execute().body();
+        logger.info("/getPluginOpenPId response: {}", res);
+        return ApiResponse.ok(res);
+    }
 
+    /**
+     * 获取当前计数
+     *
+     * @return API response json
+     */
+    @GetMapping(value = "/send")
+    ApiResponse getOpenId(HttpServletRequest request) {
+        String openId = request.getHeader("x-wx-openid");
+        List<WxMaSubscribeMessage.MsgData> msgDataList = new ArrayList<>();
+        msgDataList.add(new WxMaSubscribeMessage.MsgData("phrase1", "value1"));
+        msgDataList.add(new WxMaSubscribeMessage.MsgData("thing2", "value1"));
+        WxMaSubscribeMessage build = WxMaSubscribeMessage.builder()
+                .toUser(openId)
+                .templateId("vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0")
+                .data(msgDataList)
+                .build();
+//        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send";
+        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=56_gsO46P3FhiWvuOsItvPFdRpw5AUgSxNM_Denpb0fxc6Jbf8z9z-ddAbpYRPTdDJVbIjUNZ3XDuTqqlB8lfYuxx6Qy9k1UYD0JiXHC5vubN4Tn8MKlUFjfSlXuAzyOPCUNLgYN4UGFiZvgDzZIGNdAEAVTA";
+        String res = HttpRequest.post(url)
+                .header(Header.USER_AGENT, "Hutool http")//头信息，多个头信息多次调用此方法即可
+                .body(JSONUtil.toJsonStr(build))//表单内容
+                .execute().body();
+        logger.info("/getOpenId response: {}", res);
+        return ApiResponse.ok(res);
+    }
 
 
     /**
