@@ -1,16 +1,11 @@
 package com.tencent.wxcloudrun.controller;
 
-import cn.binarywang.wx.miniapp.api.WxMaService;
-import com.google.gson.JsonObject;
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.common.service.WxService;
-import com.google.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.tencent.wxcloudrun.config.ApiResponse;
 import com.tencent.wxcloudrun.dto.CounterRequest;
 import com.tencent.wxcloudrun.model.Counter;
 import com.tencent.wxcloudrun.service.CounterService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.List;
 
 /**
  * counter控制器
@@ -34,91 +27,94 @@ import java.util.List;
 
 public class CounterController {
 
-  final CounterService counterService;
-  final Logger logger;
+    final CounterService counterService;
+    final Logger logger;
 
-  public CounterController(@Autowired CounterService counterService) {
-    this.counterService = counterService;
-    this.logger = LoggerFactory.getLogger(CounterController.class);
-  }
-
-  /**
-   * 获取当前计数
-   * @return API response json
-   */
-  @GetMapping(value = "/getOpenId")
-  ApiResponse getOpenId(String code) {
-    MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();      //只能是MultiValueMap，不能是Map
-    params.add("code", code);
-    HttpHeaders headers = new HttpHeaders();
-    HttpEntity httpEntity = new HttpEntity(params, headers);
-    RestTemplate restTemplate = new RestTemplate();
-    ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity("https://api.weixin.qq.com/wxa/getpluginopenpid", httpEntity, String.class);
-    String res = stringResponseEntity.toString();
-    logger.info("/getOpenId response: {}", res);
-    return ApiResponse.ok(res);
-  }
-
-
-  /**
-   * 获取当前计数
-   * @return API response json
-   */
-  @GetMapping(value = "/api/index")
-  ApiResponse index() {
-    logger.info("/api/index get request");
-    Optional<Counter> counter = counterService.getCounter(1);
-    return ApiResponse.ok("hello world");
-  }
-
-
-
-  /**
-   * 获取当前计数
-   * @return API response json
-   */
-  @GetMapping(value = "/api/count")
-  ApiResponse get() {
-    logger.info("/api/count get request");
-    Optional<Counter> counter = counterService.getCounter(1);
-    Integer count = 0;
-    if (counter.isPresent()) {
-      count = counter.get().getCount();
+    public CounterController(@Autowired CounterService counterService) {
+        this.counterService = counterService;
+        this.logger = LoggerFactory.getLogger(CounterController.class);
     }
 
-    return ApiResponse.ok(count);
-  }
-
-
-  /**
-   * 更新计数，自增或者清零
-   * @param request {@link CounterRequest}
-   * @return API response json
-   */
-  @PostMapping(value = "/api/count")
-  ApiResponse create(@RequestBody CounterRequest request) {
-    logger.info("/api/count post request, action: {}", request.getAction());
-
-    Optional<Counter> curCounter = counterService.getCounter(1);
-    if (request.getAction().equals("inc")) {
-      Integer count = 1;
-      if (curCounter.isPresent()) {
-        count += curCounter.get().getCount();
-      }
-      Counter counter = new Counter();
-      counter.setId(1);
-      counter.setCount(count);
-      counterService.upsertCount(counter);
-      return ApiResponse.ok(count);
-    } else if (request.getAction().equals("clear")) {
-      if (!curCounter.isPresent()) {
-        return ApiResponse.ok(0);
-      }
-      counterService.clearCount(1);
-      return ApiResponse.ok(0);
-    } else {
-      return ApiResponse.error("参数action错误");
+    /**
+     * 获取当前计数
+     *
+     * @return API response json
+     */
+    @GetMapping(value = "/getOpenId")
+    ApiResponse getOpenId(String code) {
+        MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();      //只能是MultiValueMap，不能是Map
+        params.add("code", code);
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity httpEntity = new HttpEntity(params, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity("https://api.weixin.qq.com/wxa/getpluginopenpid", httpEntity, String.class);
+        String res = stringResponseEntity.toString();
+        logger.info("/getOpenId response: {}", res);
+        return ApiResponse.ok(res);
     }
-  }
-  
+
+
+    /**
+     * 获取当前计数
+     *
+     * @return API response json
+     */
+    @GetMapping(value = "/api/index")
+    ApiResponse index() {
+        logger.info("/api/index get request");
+        Optional<Counter> counter = counterService.getCounter(1);
+        return ApiResponse.ok("hello world");
+    }
+
+
+    /**
+     * 获取当前计数
+     *
+     * @return API response json
+     */
+    @GetMapping(value = "/api/count")
+    ApiResponse get() {
+        logger.info("/api/count get request");
+        Optional<Counter> counter = counterService.getCounter(1);
+        Integer count = 0;
+        if (counter.isPresent()) {
+            count = counter.get().getCount();
+        }
+
+        return ApiResponse.ok(count);
+    }
+
+
+    /**
+     * 更新计数，自增或者清零
+     *
+     * @param request {@link CounterRequest}
+     * @return API response json
+     */
+    @PostMapping(value = "/api/count")
+    ApiResponse create(@RequestBody CounterRequest request) {
+        logger.info("/api/count post request, action: {}", request.getAction());
+
+        Optional<Counter> curCounter = counterService.getCounter(1);
+        if (request.getAction().equals("inc")) {
+            Integer count = 1;
+            if (curCounter.isPresent()) {
+                count += curCounter.get().getCount();
+            }
+            Counter counter = new Counter();
+            counter.setId(1);
+            counter.setCount(count);
+            counterService.upsertCount(counter);
+            return ApiResponse.ok(count);
+        } else if (request.getAction().equals("clear")) {
+            if (!curCounter.isPresent()) {
+                return ApiResponse.ok(0);
+            }
+            counterService.clearCount(1);
+            return ApiResponse.ok(0);
+        } else {
+            return ApiResponse.error("参数action错误");
+        }
+    }
+
 }
