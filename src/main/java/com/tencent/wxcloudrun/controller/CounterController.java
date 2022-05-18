@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.net.http.HttpRequest;
 import java.util.Optional;
 
 /**
@@ -40,18 +43,23 @@ public class CounterController {
      *
      * @return API response json
      */
-    @GetMapping(value = "/getOpenId")
-    ApiResponse getOpenId(String code) {
+    @GetMapping(value = "/send")
+    ApiResponse getOpenId(HttpServletRequest request) {
+        String openId = request.getHeader("x-wx-openid");
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();      //只能是MultiValueMap，不能是Map
-        params.add("code", code);
+        params.add("touser", openId);
+        params.add("template_id","vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0");
+        params.add("data", "{ \"phrase1\": { \"value\": \"phrase1\" }, \"thing2\": { \"value\": \"thing2\" } }");
         HttpHeaders headers = new HttpHeaders();
         HttpEntity httpEntity = new HttpEntity(params, headers);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity("https://api.weixin.qq.com/wxa/getpluginopenpid", httpEntity, String.class);
+        ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity("https://api.weixin.qq.com/cgi-bin/message/subscribe/send", httpEntity, String.class);
         String res = stringResponseEntity.toString();
         logger.info("/getOpenId response: {}", res);
         return ApiResponse.ok(res);
     }
+
+
 
 
     /**
