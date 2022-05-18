@@ -15,3 +15,12 @@ spring:
 
 mybatis:
   mapper-locations: classpath*:mapper/*Mapper.xml
+
+wx:
+  miniapp:
+    configs:
+      - appid: wx9d7ec299fee2d23b
+        secret: 1eee794a8910f5d263b24647fb78c1b9
+        token: 57_ht1RVQjywzTrJp85DNKUk5ei-ZtFeFgQz0MlhYvtbanTCOZ8ee74xeOvbDcXh2DuDndZZ5alD2IB9SFwE41jtkCTYijvUJH_lEBOkmA0sWHV3lQDdOnBJHdjRZfSeEItlARBxfBr8P2hPvYTJUAdAEAYJP
+        aesKey:
+        msgDataFormat: JSON

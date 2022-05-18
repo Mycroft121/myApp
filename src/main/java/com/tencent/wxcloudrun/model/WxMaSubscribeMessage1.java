@@ -1,5 +1,6 @@
 package com.tencent.wxcloudrun.model;
 
+import cn.binarywang.wx.miniapp.bean.WxMaSubscribeMessage;
 import lombok.*;
 
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class WxMaSubscribeMessage implements Serializable {
+public class WxMaSubscribeMessage1 implements Serializable {
     private static final long serialVersionUID = 6846729898251286686L;
 
     /**
@@ -66,7 +67,7 @@ public class WxMaSubscribeMessage implements Serializable {
      */
     private String lang = "zh_CN";
 
-    public WxMaSubscribeMessage addData(String key,MsgData datum) {
+    public WxMaSubscribeMessage1 addData(String key, MsgData datum) {
         if (this.data == null) {
             this.data = new HashMap<>();
         }
