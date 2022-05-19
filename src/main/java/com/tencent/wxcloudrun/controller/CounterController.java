@@ -1,17 +1,14 @@
 package com.tencent.wxcloudrun.controller;
 
-import cn.binarywang.wx.miniapp.api.WxMaService;
-import cn.binarywang.wx.miniapp.bean.WxMaSubscribeMessage;
+import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
-import com.google.inject.Inject;
 import com.tencent.wxcloudrun.config.ApiResponse;
-import com.tencent.wxcloudrun.config.WxMaConfiguration;
 import com.tencent.wxcloudrun.dto.CounterRequest;
 import com.tencent.wxcloudrun.model.Counter;
 import com.tencent.wxcloudrun.model.OpenId;
+import com.tencent.wxcloudrun.model.WxMaSubscribeMessage1;
 import com.tencent.wxcloudrun.service.CounterService;
-import me.chanjar.weixin.common.error.WxErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 import java.util.Optional;
 
 
@@ -72,53 +70,51 @@ public class CounterController {
      *
      * @return API response json
      */
-    @GetMapping(value = "/send")
-    ApiResponse getOpenId(HttpServletRequest request) throws WxErrorException {
-        String openId = request.getHeader("x-wx-openid");
-        final WxMaService wxService = WxMaConfiguration.getMaService("wx9d7ec299fee2d23b");
-
-        wxService.getMsgService().sendSubscribeMsg(WxMaSubscribeMessage.builder()
-                .toUser(openId)
-                .templateId("vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0")
-                .build()
-                .addData(new WxMaSubscribeMessage.MsgData("phrase1", "测试数据"))
-                .addData(new WxMaSubscribeMessage.MsgData("thing2", "测试数据")));
-
-
-        return ApiResponse.ok("成功");
-    }
-
-
-//    @GetMapping(value = "/send1")
-//    ApiResponse getOpenId1(HttpServletRequest request) {
-//        //获取请求头信息
-//        Enumeration headerNames = request.getHeaderNames();
-//        //使用循环遍历请求头，并通过getHeader()方法获取一个指定名称的头字段
-//        while (headerNames.hasMoreElements()) {
-//            String headerName = (String) headerNames.nextElement();
-//            System.out.println(headerName + " : " + request.getHeader(headerName) + "<br/>");
-//        }
-////        String openId = request.getHeader("x-wx-openid");
-//        String openId = "ociwi0ZL_j3_z8CxvrElJkicoeGg";
-//        WxMaSubscribeMessage build = WxMaSubscribeMessage.builder()
-//                .touser(openId)
-//                .template_id("vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0")
+//    @GetMapping(value = "/send")
+//    ApiResponse getOpenId(HttpServletRequest request) throws WxErrorException {
+//        String openId = request.getHeader("x-wx-openid");
+//        final WxMaService wxService = WxMaConfiguration.getMaService("wx9d7ec299fee2d23b");
+//
+//        wxService.getMsgService().sendSubscribeMsg(WxMaSubscribeMessage.builder()
+//                .toUser(openId)
+//                .templateId("vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0")
 //                .build()
-//                .addData("phrase1",new WxMaSubscribeMessage.MsgData("测试数据"))
-//                .addData("thing2",new WxMaSubscribeMessage.MsgData("测试数据"));
-////        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send";
-//        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="+token;
+//                .addData(new WxMaSubscribeMessage.MsgData("phrase1", "测试数据"))
+//                .addData(new WxMaSubscribeMessage.MsgData("thing2", "测试数据")));
 //
-//        logger.info("/getOpenId request: {}", JSONUtil.toJsonStr(build));
 //
-//        String res = HttpRequest.post(url)
-//                .header(Header.USER_AGENT, "Hutool http")//头信息，多个头信息多次调用此方法即可
-//                .body(JSONUtil.toJsonStr(build))//表单内容
-////                .body("{\"touser\":\"ociwi0ZL_j3_z8CxvrElJkicoeGg\",\"template_id\":\"vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0\",\"data\":\"phrase1\":{\"value\":\"value1\"},{\"thing2\":{\"value\":\"value1\"},}}")
-//                .execute().body();
-//        logger.info("/getOpenId response: {}", res);
-//        return ApiResponse.ok(res);
+//        return ApiResponse.ok("成功");
 //    }
+    @GetMapping(value = "/send")
+    ApiResponse getOpenId1(HttpServletRequest request) {
+        //获取请求头信息
+        Enumeration headerNames = request.getHeaderNames();
+        //使用循环遍历请求头，并通过getHeader()方法获取一个指定名称的头字段
+        while (headerNames.hasMoreElements()) {
+            String headerName = (String) headerNames.nextElement();
+            System.out.println(headerName + " : " + request.getHeader(headerName) + "<br/>");
+        }
+        String openId = request.getHeader("x-wx-openid");
+//        String openId = "ociwi0ZL_j3_z8CxvrElJkicoeGg";
+        WxMaSubscribeMessage1 build = WxMaSubscribeMessage1.builder()
+                .touser(openId)
+                .template_id("vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0")
+                .build()
+                .addData("phrase1", new WxMaSubscribeMessage1.MsgData("测试数据"))
+                .addData("thing2", new WxMaSubscribeMessage1.MsgData("测试数据"));
+        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send";
+//        String url = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="+token;
+
+        logger.info("/getOpenId request: {}", JSONUtil.toJsonStr(build));
+
+        String res = HttpRequest.post(url)
+                .header(Header.USER_AGENT, "Hutool http")//头信息，多个头信息多次调用此方法即可
+                .body(JSONUtil.toJsonStr(build))//表单内容
+//                .body("{\"touser\":\"ociwi0ZL_j3_z8CxvrElJkicoeGg\",\"template_id\":\"vKzxbGQYqEQdIfi9Kjzf6FEDqUbKgVkLxMe2VVRQdz0\",\"data\":\"phrase1\":{\"value\":\"value1\"},{\"thing2\":{\"value\":\"value1\"},}}")
+                .execute().body();
+        logger.info("/getOpenId response: {}", res);
+        return ApiResponse.ok(res);
+    }
 
 
     /**
